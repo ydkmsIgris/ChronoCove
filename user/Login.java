@@ -60,6 +60,7 @@ public class Login extends javax.swing.JFrame {
         jLabel16 = new javax.swing.JLabel();
         jLabel17 = new javax.swing.JLabel();
         jLabel18 = new javax.swing.JLabel();
+        jLabel19 = new javax.swing.JLabel();
 
         jPanel1.setForeground(new java.awt.Color(255, 204, 0));
 
@@ -216,6 +217,9 @@ public class Login extends javax.swing.JFrame {
         });
         jPanel5.add(jLabel18, new org.netbeans.lib.awtextra.AbsoluteConstraints(265, 357, 120, 20));
 
+        jLabel19.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/ChronoCove Logo.png"))); // NOI18N
+        jPanel5.add(jLabel19, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 30, -1, -1));
+
         getContentPane().add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -10, 630, 410));
 
         pack();
@@ -251,7 +255,7 @@ public class Login extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        String user = jTextField3.getText().trim();        // Email or Username field
+    String user = jTextField3.getText().trim();        // Email or Username field
     String convertPass = new String(jPasswordField3.getPassword());  // Password field
 
     if (user.isEmpty() || convertPass.isBlank()) {
@@ -269,19 +273,19 @@ public class Login extends javax.swing.JFrame {
     // Try to read users from file
     try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("userdata.dat"))) {
         ArrayList<Users> userList = (ArrayList<Users>) ois.readObject();
-        boolean found = false;
+        Users loggedInUser = null;
 
         for (Users u : userList) {
             if (u.getUsername().equals(user) && u.getPassword().equals(convertPass)) {
-                found = true;
+                loggedInUser = u;
                 break;
             }
         }
 
-        if (found) {
+        if (loggedInUser != null) {
             JOptionPane.showMessageDialog(null, "Login Successful!", "SUCCESS", JOptionPane.INFORMATION_MESSAGE);
             this.dispose();
-            new UserDashboard().setVisible(true); // or another screen
+            new UserDashboard(loggedInUser).setVisible(true); // Pass the user object
         } else {
             JOptionPane.showMessageDialog(null, "Unidentified Username/Password", "ERROR", JOptionPane.ERROR_MESSAGE);
         }
@@ -345,6 +349,7 @@ public class Login extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
