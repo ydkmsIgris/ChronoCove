@@ -48,8 +48,9 @@ public class SignUp extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setUndecorated(true);
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 204));
+        jPanel1.setBackground(new java.awt.Color(151, 172, 159));
 
         SecurityQuestion.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "What is your favorite food?", "What is your pet name?", "What is you school name?", "What is your favorite color?" }));
         SecurityQuestion.addActionListener(new java.awt.event.ActionListener() {
@@ -193,7 +194,7 @@ public class SignUp extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -249,9 +250,13 @@ public class SignUp extends javax.swing.JFrame {
 
     // Check if username already exists
     for (Users user : userList) {
-        if (user.getUsername().equalsIgnoreCase(username)) {
+        if (user.getUsername().equals(username)) {
             javax.swing.JOptionPane.showMessageDialog(this, "Username already taken.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
             return;
+        }
+        if (user.getEmail().equals(email)) {
+        javax.swing.JOptionPane.showMessageDialog(this, "An account with this email already exists.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+        return;
         }
     }
 
