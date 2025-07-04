@@ -51,11 +51,7 @@ public class UserTransaction extends javax.swing.JFrame {
         jTable1.setBackground(new java.awt.Color(151, 172, 159));
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+
             },
             new String [] {
                 "ID", "Item", "Quantity", "Price", "Total"
