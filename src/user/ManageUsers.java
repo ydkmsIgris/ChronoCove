@@ -4,21 +4,35 @@
  */
 package user;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.util.logging.Level;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+import java.io.ObjectOutputStream;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author maria
  */
 public class ManageUsers extends javax.swing.JFrame {
-    
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ManageUsers.class.getName());
-
+    private List<Users> userList = new ArrayList<>();
+    public ManageUsers() {
+        initComponents();
+        loadUsersFromFile();
+        setupTableSelectionListener();
+    }
     /**
      * Creates new form ManageUsers
      */
-    public ManageUsers() {
-        initComponents();
-    }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -71,7 +85,7 @@ public class ManageUsers extends javax.swing.JFrame {
 
         jLabel3.setText("Password:");
 
-        jLabel4.setText("Re-Enter Password:");
+        jLabel4.setText("New Password:");
 
         jLabel5.setText("First Name:");
 
@@ -93,6 +107,11 @@ public class ManageUsers extends javax.swing.JFrame {
 
         jButton4.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
         jButton4.setText("UPDATE");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -103,7 +122,7 @@ public class ManageUsers extends javax.swing.JFrame {
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, true
+                false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -123,6 +142,11 @@ public class ManageUsers extends javax.swing.JFrame {
 
         jButton5.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
         jButton5.setText("DELETE");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
 
         jButton6.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
         jButton6.setText("BACK");
@@ -241,22 +265,113 @@ public class ManageUsers extends javax.swing.JFrame {
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+     private void loadUsersFromFile() {
+        File file = new File("userdata.dat");
+        if (!file.exists()) return;
+
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
+            userList = (List<Users>) ois.readObject();
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "Failed to load users", e);
+            userList = new ArrayList<>();
+        }
+        refreshUserTable();
+    }
+
+    private void saveUsersToFile() {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("userdata.dat"))) {
+            oos.writeObject(userList);
+        } catch (IOException e) {
+            logger.log(Level.SEVERE, "Failed to save users", e);
+        }
+    }
+
+    private void refreshUserTable() {
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        model.setRowCount(0);
+        for (Users u : userList) {
+            model.addRow(new Object[]{
+                u.getUsername(), u.getEmail(), u.getPassword(), u.getfName(), u.getlName()
+            });
+        }
+    }
+
+    private void setupTableSelectionListener() {
+        jTable1.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                int row = jTable1.getSelectedRow();
+                if (row >= 0) {
+                    Users u = userList.get(row);
+                    jTextField1.setText(u.getUsername());
+                    jPasswordField1.setText(u.getPassword());
+                    jPasswordField2.setText(u.getPassword());
+                    jTextField4.setText(u.getfName());
+                    jTextField5.setText(u.getlName());
+                    jTextField6.setText(u.getEmail());
+                }
+            }
+        });
+    }
+    
 
     private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField2ActionPerformed
 
     private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
-        // TODO add your handling code here:
+
     }//GEN-LAST:event_jTextField3ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
+        jTextField1.setText("");
+        jPasswordField1.setText("");
+        jPasswordField2.setText("");
+        jTextField4.setText("");
+        jTextField5.setText("");
+        jTextField6.setText("");
+        jTextField3.setText(""); // Optional: also clear search field
+        jTable1.clearSelection();
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
         this.dispose();
     }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        int row = jTable1.getSelectedRow();
+        if (row < 0) {
+            JOptionPane.showMessageDialog(this, "Please select a user to update.");
+            return;
+        }
+        String pass = new String(jPasswordField1.getPassword());
+        if (!pass.equals(new String(jPasswordField2.getPassword()))) {
+            JOptionPane.showMessageDialog(this, "Passwords do not match!");
+            return;
+        }
+        Users u = userList.get(row);
+        u.setUsername(jTextField1.getText());
+        u.setPassword(pass);
+        u.setEmail(jTextField6.getText());
+        u.setfName(jTextField4.getText());
+        u.setlName(jTextField5.getText());
+        saveUsersToFile();
+        refreshUserTable();
+        JOptionPane.showMessageDialog(this, "User updated successfully.");
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        int row = jTable1.getSelectedRow();
+        if (row < 0) {
+            JOptionPane.showMessageDialog(this, "Please select a user to delete.");
+            return;
+        }
+        if (JOptionPane.showConfirmDialog(this, "Delete this user?", "Confirm", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+            userList.remove(row);
+            saveUsersToFile();
+            refreshUserTable();
+            JOptionPane.showMessageDialog(this, "User deleted.");
+        }
+    }//GEN-LAST:event_jButton5ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -278,6 +393,15 @@ public class ManageUsers extends javax.swing.JFrame {
             logger.log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
+        try {
+            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    UIManager.setLookAndFeel(info.getClassName());
+                }
+            }
+        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException | UnsupportedLookAndFeelException e) {
+            logger.log(Level.SEVERE, null, e);
+        }
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> new ManageUsers().setVisible(true));

@@ -55,8 +55,6 @@
                           <EmptySpace min="-2" pref="136" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="1" attributes="0">
-                          <Component id="button2" min="-2" pref="115" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="31" max="-2" attributes="0"/>
                           <Component id="button1" min="-2" pref="115" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="227" max="-2" attributes="0"/>
                       </Group>
@@ -72,10 +70,7 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jScrollPane1" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="button1" pref="40" max="32767" attributes="0"/>
-                      <Component id="button2" max="32767" attributes="0"/>
-                  </Group>
+                  <Component id="button1" pref="40" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -164,14 +159,6 @@
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="button1ActionPerformed"/>
           </Events>
-        </Component>
-        <Component class="java.awt.Button" name="button2">
-          <Properties>
-            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="9f" green="ac" red="97" type="rgb"/>
-            </Property>
-            <Property name="label" type="java.lang.String" value="View Receipt"/>
-          </Properties>
         </Component>
       </SubComponents>
     </Container>

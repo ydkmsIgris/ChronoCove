@@ -5,6 +5,8 @@
 package user;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -22,6 +24,37 @@ public class MAIN extends javax.swing.JFrame {
         jTable1.getColumnModel().getColumn(0).setPreferredWidth(30);  
         jTable1.getColumnModel().getColumn(1).setPreferredWidth(200);
     }
+    
+    public class ReceiptData {
+    private static List<String> receiptLines = new ArrayList<>();
+    private static String totalAmount = "0.00";
+    private static String amountPaid = "0.00";
+    private static String change = "0.00";
+ 
+    public static void saveReceipt(List<String> lines, String total, String paid, String balance) {
+        receiptLines.clear();
+        receiptLines.addAll(lines);
+        totalAmount = total;
+        amountPaid = paid;
+        change = balance;
+    }
+ 
+    public static List<String> getReceiptLines() {
+        return receiptLines;
+    }
+ 
+    public static String getTotalAmount() {
+        return totalAmount;
+    }
+ 
+    public static String getAmountPaid() {
+        return amountPaid;
+    }
+ 
+    public static String getChange() {
+        return change;
+    }
+}
 public void addtable(int id ,String Name, int Quantity, Double Price){
     DefaultTableModel dt = (DefaultTableModel) jTable1.getModel();
    
@@ -2186,6 +2219,9 @@ public void cal(){
                 JOptionPane.WARNING_MESSAGE);
             return;
         }
+        String userName = UserDashboard.getCurrentUser();
+        if (userName == null) userName = "Guest";
+        AdminReceipt.saveReceipt(model,userName);
 
         // Proceed to print receipt since table has data
         bill.setText("========================================\n");
